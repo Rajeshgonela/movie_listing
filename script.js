@@ -1,47 +1,18 @@
-const apiKey = 'd271c71a3f1bc26e36d078a2fccd801b'; 
+const apiKey = 'd271c71a3f1bc26e36d078a2fccd801b';
+const baseApiUrl = 'https://api.themoviedb.org/3';
+let currentPage = 1;
+const moviesPerPage = 10;
 
 
-// Open modal with movie description, release date, and IMDb rating
-function openModal(movie) {
-    const modal = document.getElementById('movieDescriptionModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDescription = document.getElementById('modalDescription');
-    const modalReleaseDate = document.getElementById('modalReleaseDate');
-    const modalImdbRating = document.getElementById('modalImdbRating');
-  
-    modalTitle.textContent = movie.title;
-    modalDescription.textContent = movie.overview;
-    modalReleaseDate.textContent = `Release Date: ${movie.release_date}`;
-    modalImdbRating.textContent = `IMDb Rating: ${movie.vote_average}`;
-  
-    modal.style.display = 'block';
-  }
-  
-
-function closeModal() {
-    const modal = document.getElementById('movieDescriptionModal');
-    modal.style.display = 'none';
-  }
-  
- 
-  document.addEventListener('DOMContentLoaded', async () => {
-   
-    
-    const closeButton = document.getElementsByClassName('close')[0];
-    closeButton.addEventListener('click', closeModal);
-  });
-  
-
-  
 
 // Fetch popular movies
-async function fetchMovies() {
+async function fetchMovies(page = 1) {
   try {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`);
+    const response = await fetch(`${baseApiUrl}/movie/popular?api_key=${apiKey}&page=${page}`);
     const data = await response.json();
     return data.results;
   } catch (error) {
-    console.log('Error:', error);
+    console.error('Error fetching movies:', error);
     return [];
   }
 }
@@ -74,29 +45,94 @@ function displayMovies(movies) {
   });
 }
 
-
+// Handle search functionality
 function handleSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const searchTerm = searchInput.value.toLowerCase();
-  
-    const movieCards = document.getElementsByClassName('movie-card');
-    for (const card of movieCards) {
-      const title = card.querySelector('h2').textContent.toLowerCase();
-      if (title.includes(searchTerm)) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
+  const searchInput = document.getElementById('searchInput');
+  const searchTerm = searchInput.value.toLowerCase();
+
+  const movieCards = document.getElementsByClassName('movieCard');
+  for (const card of movieCards) {
+    const title = card.querySelector('h2').textContent.toLowerCase();
+    if (title.includes(searchTerm)) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
     }
   }
-  
-  // Fetch movies and display them when the page loads
-  document.addEventListener('DOMContentLoaded', async () => {
-    const movies = await fetchMovies();
-    displayMovies(movies);
+}
+
+// Render pagination
+function renderPagination(totalPages) {
+  const paginationContainer = document.getElementById('pagination');
+  paginationContainer.innerHTML = '';
+
+  // Add "Prev" button
+  const prevButton = document.createElement('a');
+  prevButton.href = '#';
+  prevButton.className = 'pagination-link';
+  prevButton.textContent = 'Prev';
+  prevButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (currentPage > 1) {
+      currentPage--;
+      loadMovies();
+    }
   });
-  
+  paginationContainer.appendChild(prevButton);
+
+  // Calculate the start and end page numbers for pagination
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, startPage + 4);
+  if (endPage - startPage < 4) {
+    startPage = Math.max(1, endPage - 4);
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    const paginationLink = document.createElement('a');
+    paginationLink.href = '#';
+    paginationLink.className = 'pagination-link';
+    paginationLink.textContent = i;
+    if (i === currentPage) {
+      paginationLink.classList.add('active');
+    }
+    paginationLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      currentPage = i;
+      loadMovies();
+    });
+    paginationContainer.appendChild(paginationLink);
+  }
+
+  // Add "Next" button
+  const nextButton = document.createElement('a');
+  nextButton.href = '#';
+  nextButton.className = 'pagination-link';
+  nextButton.textContent = 'Next';
+  nextButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (currentPage < totalPages) {
+      currentPage++;
+      loadMovies();
+    }
+  });
+  paginationContainer.appendChild(nextButton);
+}
+
+// Load movies and display them
+async function loadMovies() {
+  const movies = await fetchMovies(currentPage);
+  displayMovies(movies);
+
+  // Fetch total pages from API response
+  const totalPages = 100; // Replace with the actual total pages from the API response if available
+  renderPagination(totalPages);
+}
+
+// Initial page load
+document.addEventListener('DOMContentLoaded', () => {
+  loadMovies();
+
   // Event listener for search input
   const searchInput = document.getElementById('searchInput');
   searchInput.addEventListener('input', handleSearch);
-  
+});
