@@ -15,7 +15,9 @@ Bootstrap 5
 
 **How to Use**
 Clone the repository to your local machine:
-git clone https://github.com/Rakesh2102/movie-listing-webpage.git
+
+
+1.git clone https://github.com/Rakesh2102/movie-listing-webpage.git
 
 
 2. Open the index.html file in your preferred web browser.
