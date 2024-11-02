@@ -1,16 +1,18 @@
-Movie Listing Webpage
+##Movie Listing Webpage
 This project is a simple Movie Listing webpage that allows users to search and view information about various movies. It is designed with a clean and responsive interface.
 
-Features
+##Features
 Search movies by title
 Display movie information dynamically
 Modal for detailed movie description including release date and IMDb rating
-Technologies Used
+
+##Technologies Used
 HTML5
 CSS3
 JavaScript
 Bootstrap 5
-How to Use
+
+##How to Use
 Clone the repository to your local machine:
 git clone https://github.com/Rakesh2102/movie-listing-webpage.git
 
