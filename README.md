@@ -34,10 +34,15 @@ Clone the repository to your local machine:
 **Project Structure**
 
   index.html: Main HTML file containing the structure of the webpage.
+  
   final.css: Customized CSS file for styling.
+  
   final.js: JavaScript file for dynamic content and functionality.
+  
   images/: Directory containing the favicon image.
 
 **Credits**
+
 Movie data is fetched from https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}.
+
 Favicon: https://favicon.io/favicon-converter/
