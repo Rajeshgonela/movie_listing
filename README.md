@@ -8,9 +8,13 @@ Display movie information dynamically
 Modal for detailed movie description including release date and IMDb rating
 
 **Technologies Used**
+
 HTML5
+
 CSS3
+
 JavaScript
+
 Bootstrap 5
 
 **How to Use**
